@@ -1,0 +1,13 @@
+{
+  "name": "webpack-universal-helpers-__e2e-tests__",
+  "private": true,
+  "version": "0.0.0",
+  "author": "Vlad Zhukov (http://github.com/Vlad-Zhukov)",
+  "scripts": {
+    "start": "webpack-universal --bundle dist/app.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^3.6.0"
+  }
+}
