@@ -1,4 +1,4 @@
-# webpack-universal-helpers · [![npm](https://img.shields.io/npm/v/webpack-blocks-more.svg)](https://npm.im/webpack-universal-helpers)
+# webpack-universal-helpers · [![npm](https://img.shields.io/npm/v/webpack-universal-helpers.svg)](https://npm.im/webpack-universal-helpers)
 
 > Just a few helpers for building universal apps with [webpack](https://webpack.js.org/).
 
