@@ -1,5 +1,5 @@
 import execa from 'execa';
-import webpack from 'webpack'; // eslint-disable-line import/no-unresolved,import/extensions
+import webpack from 'webpack';
 
 export default function watchServer({webpackConfig, bundlePath, cwd}) {
     let webpackCompileCount = 0;

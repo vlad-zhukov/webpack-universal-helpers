@@ -1,6 +1,8 @@
+#!/usr/bin/env node
+
 const path = require('path');
 const yargs = require('yargs');
-const watchServer = require('../dist/webpack-universal-helpers.cjs.js');
+const {watchServer} = require('../dist/webpack-universal-helpers.cjs.js');
 
 const {config, bundle, cwd} = yargs
     .options({

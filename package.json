@@ -1,6 +1,6 @@
 {
   "name": "webpack-universal-helpers",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "description": "Just a few helpers for building universal apps with webpack",
   "author": "Vlad Zhukov (http://github.com/Vlad-Zhukov)",
   "license": "MIT",
@@ -38,7 +38,8 @@
     "prettier-eslint-cli": "^4.4.0",
     "rimraf": "^2.6.2",
     "rollup": "^0.48.2",
-    "rollup-plugin-babel": "^3.0.2"
+    "rollup-plugin-babel": "^3.0.2",
+    "webpack": "^3.6.0"
   },
   "peerDependencies": {
     "webpack": ">=3.0.0"

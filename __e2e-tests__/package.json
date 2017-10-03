@@ -8,6 +8,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "webpack": "^3.6.0"
+    "webpack": "^3.6.0",
+    "webpack-universal-helpers": "^0.0.3"
   }
 }
