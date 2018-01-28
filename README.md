@@ -39,7 +39,9 @@ __Arguments__
 
 ---
 
-### `watchServer(options)`
+### `watchServer`
+
+#### `watchServer.start(options)`
 
 __Arguments__
 

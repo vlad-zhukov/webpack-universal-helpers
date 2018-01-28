@@ -1,46 +1,71 @@
 import execa from 'execa';
 import webpack from 'webpack';
 
-export default function watchServer({webpackConfig, bundlePath, cwd}) {
-    let webpackCompileCount = 0;
-    let serverStartCount = 0;
-    let serverProcess;
+export default {
+    options: null,
 
-    function startServer() {
-        serverStartCount += 1;
-        console.log(`Server start ${serverStartCount}...`);
-        serverProcess = execa('node', [bundlePath], {cwd});
-        serverProcess.stdout.pipe(process.stdout);
-        serverProcess.stderr.pipe(process.stderr);
-    }
+    webpackCompileCount: 0,
+    serverStartCount: 0,
+    serverProcess: null,
+    watcher: null,
 
-    function stopServer() {
-        if (serverProcess) {
-            serverProcess.kill();
+    startServer() {
+        this.serverStartCount += 1;
+        console.log(`Server start ${this.serverStartCount}...`);
+        this.serverProcess = execa('node', [this.options.bundlePath], {cwd: this.options.cwd, stdio: 'inherit'});
+    },
+
+    stopServer() {
+        if (this.serverProcess) {
+            this.serverProcess.kill();
         }
-    }
+    },
 
-    const compiler = webpack(webpackConfig);
+    startWebpack() {
+        const compiler = webpack(this.options.webpackConfig);
 
-    compiler.plugin('compile', () => {
-        webpackCompileCount += 1;
-        console.log(`Webpack compile ${webpackCompileCount}...`);
-    });
+        compiler.plugin('compile', () => {
+            this.webpackCompileCount += 1;
+            console.log(`Webpack compile ${this.webpackCompileCount}...`);
+        });
 
-    const watcher = compiler.watch({}, (errors, stats) => {
-        stopServer();
-        if (errors || stats.hasErrors()) {
-            console.error(`${stats.toString('errors-only')}\n`);
+        this.watcher = compiler.watch({ignored: /node_modules/}, (err, stats) => {
+            this.stopServer();
+
+            if (err) {
+                console.error(err.stack || err);
+                if (err.details) {
+                    console.error(err.details);
+                }
+                return;
+            }
+
+            if (stats.hasErrors()) {
+                console.error(stats.toString('minimal'));
+                return;
+            }
+
+            this.startServer();
+        });
+    },
+
+    stopWebpack() {
+        if (this.watcher) {
+            this.watcher.close();
         }
-        else {
-            startServer();
-        }
-    });
+    },
 
-    function exit() {
-        watcher.close();
-        stopServer();
-    }
+    exit(err) {
+        console.error('ERROR', err);
+        this.stopWebpack();
+        this.stopServer();
+    },
 
-    ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT', 'exit', 'uncaughtException'].forEach(event => process.on(event, exit));
-}
+    start(options) {
+        this.options = options;
+        this.startWebpack();
+
+        ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT', 'exit', 'uncaughtException'].forEach(event =>
+            process.on(event, this.exit));
+    },
+};

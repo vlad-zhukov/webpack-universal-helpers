@@ -23,20 +23,7 @@ const {config, bundle, cwd} = yargs
     })
     .help().argv;
 
-console.log('Loading Webpack config...');
-
-const configPath = path.resolve(config);
-
 // eslint-disable-next-line import/no-dynamic-require
-let webpackConfig = require(configPath);
-if (typeof webpackConfig === 'object' && typeof webpackConfig.default === 'object') {
-    // Normalize default export
-    webpackConfig = webpackConfig.default;
-}
+const webpackConfig = require(path.resolve(config));
 
-// if (!bundlePath) {
-//     console.error('Webpack config file must export an object with ‘output.path’.');
-//     process.exit(1);
-// }
-
-watchServer({webpackConfig, bundlePath: bundle, cwd});
+watchServer.start({webpackConfig, bundlePath: bundle, cwd});
