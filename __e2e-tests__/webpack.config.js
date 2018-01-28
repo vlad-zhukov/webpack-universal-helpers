@@ -13,5 +13,5 @@ module.exports = {
         nodeExternals({
             whitelist: ['webpack-universal-helpers'],
         }),
-    ]
+    ],
 };

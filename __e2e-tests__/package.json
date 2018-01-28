@@ -6,8 +6,7 @@
   "scripts": {
     "start": "webpack-universal --bundle dist/app.js"
   },
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "webpack": "^3.10.0",
     "webpack-universal-helpers": "^0.0.3"
   }
