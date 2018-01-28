@@ -77,7 +77,7 @@ export default function nodeExternals({
     excludeNodeModulesDirs,
     whitelist,
     createImport = request => `commonjs ${request}`,
-    includeAbsolutePaths = true,
+    includeAbsolutePaths = false,
 }) {
     const modulesFromPackageJson = getModuleListFromPackageJson(pathToPackageJson, packageJsonSections);
     const modulesFromNodeModules = getModuleListFromNodeModules(pathToNodeModules, excludeNodeModulesDirs);
