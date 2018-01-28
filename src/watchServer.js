@@ -55,17 +55,17 @@ export default {
         }
     },
 
-    exit(err) {
-        console.error('ERROR', err);
-        this.stopWebpack();
-        this.stopServer();
-    },
-
     start(options) {
         this.options = options;
         this.startWebpack();
 
         ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT', 'exit', 'uncaughtException'].forEach(event =>
-            process.on(event, this.exit));
+            process.on(event, (err) => {
+                if (err) {
+                    console.error('ERROR', err);
+                }
+                this.stopWebpack();
+                this.stopServer();
+            }));
     },
 };
