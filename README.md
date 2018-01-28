@@ -24,7 +24,18 @@ __Arguments__
 
 ## API
 
-### `nodeExternals([options])`
+### `nodeExternals(options)`
+
+__Arguments__
+
+1. `options` _(Object)_:
+   - `[pathToPackageJson]` _(String)_
+   - `[packageJsonSections]` _(Array\<String\>)_: Defaults to `['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']`.
+   - `[pathToNodeModules]` _(String)_
+   - `[excludeNodeModulesDirs]` _(Function|Array\<String\>|Regex|String)_
+   - `[whitelist]` _(Function|Array\<String\>|Regex|String)_
+   - `[createImport]` _(Function)_: Defaults to `module => 'commonjs' + module`.
+   - `[includeAbsolutePaths]` _(Booldean)_: Defaults to `false`.
 
 ---
 
