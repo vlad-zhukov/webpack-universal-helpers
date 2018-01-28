@@ -76,7 +76,7 @@ export default function nodeExternals({
     pathToNodeModules,
     excludeNodeModulesDirs,
     whitelist,
-    importType = 'commonjs',
+    createImport = request => `commonjs ${request}`,
     includeAbsolutePaths = true,
 }) {
     const modulesFromPackageJson = getModuleListFromPackageJson(pathToPackageJson, packageJsonSections);
@@ -89,8 +89,8 @@ export default function nodeExternals({
         const moduleName = getModuleName(request, includeAbsolutePaths);
         if (contains(moduleList, moduleName) || matchesPattern(request, whitelist)) {
             // mark this module as external
-            // https://webpack.github.io/docs/configuration.html#externals
-            return callback(null, `${importType} ${request}`);
+            // https://webpack.js.org/configuration/externals/
+            return callback(null, createImport(request));
         }
         return callback();
     };
