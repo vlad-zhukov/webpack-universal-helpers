@@ -75,7 +75,7 @@ export default function nodeExternals({
     packageJsonSections = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'],
     pathToNodeModules,
     excludeNodeModulesDirs,
-    whitelist,
+    whitelistModules,
     createImport = request => `commonjs ${request}`,
     includeAbsolutePaths = false,
 }) {
@@ -87,7 +87,7 @@ export default function nodeExternals({
 
     return (context, request, callback) => {
         const moduleName = getModuleName(request, includeAbsolutePaths);
-        if (contains(moduleList, moduleName) || matchesPattern(request, whitelist)) {
+        if (contains(moduleList, moduleName) || matchesPattern(moduleName, whitelistModules)) {
             // mark this module as external
             // https://webpack.js.org/configuration/externals/
             return callback(null, createImport(request));

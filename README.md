@@ -33,7 +33,7 @@ __Arguments__
    - `[packageJsonSections]` _(Array\<String\>)_: Defaults to `['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']`.
    - `[pathToNodeModules]` _(String)_
    - `[excludeNodeModulesDirs]` _(Function|Array\<String\>|Regex|String)_
-   - `[whitelist]` _(Function|Array\<String\>|Regex|String)_
+   - `[whitelistModules]` _(Function|Array\<String\>|Regex|String)_
    - `[createImport]` _(Function)_: Defaults to `module => 'commonjs' + module`.
    - `[includeAbsolutePaths]` _(Booldean)_: Defaults to `false`.
 
