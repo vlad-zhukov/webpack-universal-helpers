@@ -26,4 +26,4 @@ const {config, bundle, cwd} = yargs
 // eslint-disable-next-line import/no-dynamic-require
 const webpackConfig = require(path.resolve(config));
 
-watchServer.start({webpackConfig, bundlePath: bundle, cwd});
+watchServer({webpackConfig, bundlePath: bundle, cwd});
