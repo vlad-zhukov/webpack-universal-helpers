@@ -47,5 +47,6 @@ __Arguments__
    - `webpackConfig` _(String)_
    - `bundlePath` _(String)_
    - `cwd` _(String)_
+   - `hot` _(Boolean)_
 
 ---

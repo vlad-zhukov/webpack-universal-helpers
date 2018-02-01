@@ -1,6 +1,18 @@
 import execa from 'execa';
 import webpack from 'webpack';
 
+// Webpack compile in a try-catch
+function compile(config) {
+    let compiler;
+    try {
+        compiler = webpack(config);
+    } catch (e) {
+        console.error('Failed to compile.', e);
+        process.exitCode = 1;
+    }
+    return compiler;
+}
+
 export default function watchServer(options) {
     const wServer = {
         webpackCompileCount: 0,
@@ -9,9 +21,11 @@ export default function watchServer(options) {
         watcher: null,
 
         startServer() {
-            this.serverStartCount += 1;
-            console.log(`Server start ${this.serverStartCount}...`);
-            this.serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
+            if (!this.serverProcess || !options.hot) {
+                this.serverStartCount += 1;
+                console.log(`Server start ${this.serverStartCount}...`);
+                this.serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
+            }
         },
 
         stopServer() {
@@ -21,7 +35,7 @@ export default function watchServer(options) {
         },
 
         startWebpack() {
-            const compiler = webpack(options.webpackConfig);
+            const compiler = compile(options.webpackConfig);
 
             compiler.plugin('compile', () => {
                 this.webpackCompileCount += 1;
@@ -29,7 +43,9 @@ export default function watchServer(options) {
             });
 
             this.watcher = compiler.watch({ignored: /node_modules/}, (err, stats) => {
-                this.stopServer();
+                if (!options.hot) {
+                    this.stopServer();
+                }
 
                 if (err) {
                     console.error(err.stack || err);

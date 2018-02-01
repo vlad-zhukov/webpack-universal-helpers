@@ -4,7 +4,7 @@ const path = require('path');
 const yargs = require('yargs');
 const {watchServer} = require('../dist/webpack-universal-helpers.cjs.js');
 
-const {config, bundle, cwd} = yargs
+const {config, bundle, cwd, hot} = yargs
     .options({
         config: {
             default: 'webpack.config.js',
@@ -20,10 +20,14 @@ const {config, bundle, cwd} = yargs
             describe: 'path to working directory the bundle will be executed in',
             type: 'string',
         },
+        hot: {
+            describe: 'hot module replacement support',
+            type: 'boolean',
+        },
     })
     .help().argv;
 
 // eslint-disable-next-line import/no-dynamic-require
 const webpackConfig = require(path.resolve(config));
 
-watchServer({webpackConfig, bundlePath: bundle, cwd});
+watchServer({webpackConfig, bundlePath: bundle, cwd, hot});
