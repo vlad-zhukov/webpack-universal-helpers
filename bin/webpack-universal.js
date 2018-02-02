@@ -4,7 +4,9 @@ const path = require('path');
 const yargs = require('yargs');
 const {watchServer} = require('../dist/webpack-universal-helpers.cjs.js');
 
-const {config, bundle, cwd, hot} = yargs
+const {
+    config, bundle, cwd, hot,
+} = yargs
     .options({
         config: {
             default: 'webpack.config.js',
@@ -30,4 +32,9 @@ const {config, bundle, cwd, hot} = yargs
 // eslint-disable-next-line import/no-dynamic-require
 const webpackConfig = require(path.resolve(config));
 
-watchServer({webpackConfig, bundlePath: bundle, cwd, hot});
+watchServer({
+    webpackConfig,
+    bundlePath: bundle,
+    cwd,
+    hot,
+});

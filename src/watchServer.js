@@ -6,8 +6,9 @@ function compile(config) {
     let compiler;
     try {
         compiler = webpack(config);
-    } catch (e) {
-        console.error('Failed to compile.', e);
+    }
+    catch (error) {
+        console.error('Failed to compile.', error);
         process.exitCode = 1;
     }
     return compiler;
@@ -20,18 +21,32 @@ export default function watchServer(options) {
         serverProcess: null,
         watcher: null,
 
-        startServer() {
-            if (!this.serverProcess || !options.hot) {
-                this.serverStartCount += 1;
-                console.log(`Server start ${this.serverStartCount}...`);
-                this.serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
+        restartServer() {
+            const isDead = this.isDead();
+
+            if (options.hot && !isDead) {
+                return;
             }
+
+            this.stopServer();
+            this.serverStartCount += 1;
+            console.log(`Server start ${this.serverStartCount}...`);
+            this.serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
         },
 
         stopServer() {
-            if (this.serverProcess) {
+            if (!this.isDead()) {
                 this.serverProcess.kill();
+                this.serverProcess.killed = true;
             }
+        },
+
+        isDead() {
+            if (!this.serverProcess) {
+                return true;
+            }
+
+            return !!(this.serverProcess.killed || this.serverProcess.exitCode);
         },
 
         startWebpack() {
@@ -42,15 +57,11 @@ export default function watchServer(options) {
                 console.log(`Webpack compile ${this.webpackCompileCount}...`);
             });
 
-            this.watcher = compiler.watch({ignored: /node_modules/}, (err, stats) => {
-                if (!options.hot) {
-                    this.stopServer();
-                }
-
-                if (err) {
-                    console.error(err.stack || err);
-                    if (err.details) {
-                        console.error(err.details);
+            this.watcher = compiler.watch({ignored: /node_modules/}, (error, stats) => {
+                if (error) {
+                    console.error(error.stack || error);
+                    if (error.details) {
+                        console.error(error.details);
                     }
                     return;
                 }
@@ -60,7 +71,7 @@ export default function watchServer(options) {
                     return;
                 }
 
-                this.startServer();
+                this.restartServer();
             });
         },
 
@@ -74,9 +85,9 @@ export default function watchServer(options) {
             this.startWebpack();
 
             ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT', 'exit', 'uncaughtException'].forEach(event =>
-                process.on(event, (err) => {
-                    if (err) {
-                        console.error('ERROR', err);
+                process.on(event, (error) => {
+                    if (error) {
+                        console.error('ERROR', error);
                     }
                     this.stopWebpack();
                     this.stopServer();
