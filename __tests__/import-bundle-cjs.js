@@ -2,5 +2,5 @@ const {nodeExternals, watchServer} = require('../dist/webpack-universal-helpers.
 
 test('import-bundle-cjs', () => {
     expect(typeof nodeExternals).toBe('function');
-    expect(typeof watchServer).toBe('object');
+    expect(typeof watchServer).toBe('function');
 });
