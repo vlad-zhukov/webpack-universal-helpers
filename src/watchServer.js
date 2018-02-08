@@ -15,84 +15,76 @@ function compile(config) {
 }
 
 export default function watchServer(options) {
-    const wServer = {
-        serverProcess: null,
-        watcher: null,
+    let serverProcess = null
+    let watcher = null
 
-        restartServer() {
-            const isDead = this.isDead();
+    function isDead() {
+        if (!serverProcess) {
+            return true;
+        }
 
-            if (options.hot && !isDead) {
+        return !!(serverProcess.killed || serverProcess.exitCode);
+    }
+
+    function restartServer() {
+        if (options.hot && !isDead()) {
+            return;
+        }
+
+        stopServer();
+
+        console.log(`Starting server...`);
+        serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
+    }
+
+    function stopServer() {
+        if (!isDead()) {
+            serverProcess.kill();
+            serverProcess.killed = true;
+        }
+    }
+
+    function startWebpack() {
+        const compiler = compile(options.webpackConfig);
+
+        compiler.plugin('compile', () => {
+            console.log(`Compiling server...`);
+        });
+
+        watcher = compiler.watch({ignored: /node_modules/}, (error, stats) => {
+            if (error) {
+                console.error(error.stack || error);
+                if (error.details) {
+                    console.error(error.details);
+                }
                 return;
             }
 
-            this.stopServer();
-
-            console.log(`Starting server...`);
-            this.serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
-        },
-
-        stopServer() {
-            if (!this.isDead()) {
-                this.serverProcess.kill();
-                this.serverProcess.killed = true;
-            }
-        },
-
-        isDead() {
-            if (!this.serverProcess) {
-                return true;
+            if (stats.hasErrors()) {
+                console.error(stats.toString('minimal'));
+                return;
             }
 
-            return !!(this.serverProcess.killed || this.serverProcess.exitCode);
-        },
+            restartServer();
+        });
+    }
 
-        startWebpack() {
-            const compiler = compile(options.webpackConfig);
+    function stopWebpack() {
+        if (watcher) {
+            watcher.close();
+        }
+    }
 
-            compiler.plugin('compile', () => {
-                console.log(`Compiling...`);
-            });
+    startWebpack();
 
-            this.watcher = compiler.watch({ignored: /node_modules/}, (error, stats) => {
-                if (error) {
-                    console.error(error.stack || error);
-                    if (error.details) {
-                        console.error(error.details);
-                    }
-                    return;
-                }
-
-                if (stats.hasErrors()) {
-                    console.error(stats.toString('minimal'));
-                    return;
-                }
-
-                this.restartServer();
-            });
-        },
-
-        stopWebpack() {
-            if (this.watcher) {
-                this.watcher.close();
+    ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT', 'exit', 'uncaughtException'].forEach(event =>
+        process.on(event, (error) => {
+            stopWebpack();
+            stopServer();
+            if (error) {
+                console.error('ERROR', error);
             }
-        },
+        }));
 
-        start() {
-            this.startWebpack();
-
-            ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT', 'exit', 'uncaughtException'].forEach(event =>
-                process.on(event, (error) => {
-                    this.stopWebpack();
-                    this.stopServer();
-                    if (error) {
-                        console.error('ERROR', error);
-                    }
-                }));
-        },
-    };
-
-    wServer.start();
-
-    return wServer;
+    return {};
 }
