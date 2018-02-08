@@ -2,7 +2,7 @@
 
 > Just a few helpers for building universal apps with [webpack](https://webpack.js.org/).
 
-Designed to be used with `webpack@3+`.
+Designed to be used with `webpack@3`.
 
 ## Table of Content
 
@@ -18,9 +18,10 @@ Designed to be used with `webpack@3+`.
 
 __Arguments__
 
-1. `[config]` _(String)_: Defaults to `webpack.config.js`.
-2. `bundle` _(String)_
+1. `bundle` _(String)_: Path to bundle to start.
+2. `[config]` _(String)_: Defaults to `webpack.config.js`.
 3. `[cwd]` _(String)_
+4. `[hot]` _(Boolean)_: Defaults to `false`.
 
 ## API
 

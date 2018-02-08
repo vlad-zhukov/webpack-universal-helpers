@@ -15,8 +15,8 @@ function compile(config) {
 }
 
 export default function watchServer(options) {
-    let serverProcess = null
-    let watcher = null
+    let serverProcess = null;
+    let watcher = null;
 
     function isDead() {
         if (!serverProcess) {
@@ -26,17 +26,6 @@ export default function watchServer(options) {
         return !!(serverProcess.killed || serverProcess.exitCode);
     }
 
-    function restartServer() {
-        if (options.hot && !isDead()) {
-            return;
-        }
-
-        stopServer();
-
-        console.log(`Starting server...`);
-        serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
-    }
-
     function stopServer() {
         if (!isDead()) {
             serverProcess.kill();
@@ -44,11 +33,22 @@ export default function watchServer(options) {
         }
     }
 
+    function restartServer() {
+        if (options.hot && !isDead()) {
+            return;
+        }
+
+        stopServer();
+
+        console.log('Starting server...');
+        serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
+    }
+
     function startWebpack() {
         const compiler = compile(options.webpackConfig);
 
         compiler.plugin('compile', () => {
-            console.log(`Compiling server...`);
+            console.log('Compiling server...');
         });
 
         watcher = compiler.watch({ignored: /node_modules/}, (error, stats) => {
@@ -85,6 +85,4 @@ export default function watchServer(options) {
                 console.error('ERROR', error);
             }
         }));
-
-    return {};
 }
