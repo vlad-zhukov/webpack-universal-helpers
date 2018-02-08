@@ -16,8 +16,6 @@ function compile(config) {
 
 export default function watchServer(options) {
     const wServer = {
-        webpackCompileCount: 0,
-        serverStartCount: 0,
         serverProcess: null,
         watcher: null,
 
@@ -29,8 +27,8 @@ export default function watchServer(options) {
             }
 
             this.stopServer();
-            this.serverStartCount += 1;
-            console.log(`Server start ${this.serverStartCount}...`);
+
+            console.log(`Starting server...`);
             this.serverProcess = execa('node', [options.bundlePath], {cwd: options.cwd, stdio: 'inherit'});
         },
 
@@ -53,8 +51,7 @@ export default function watchServer(options) {
             const compiler = compile(options.webpackConfig);
 
             compiler.plugin('compile', () => {
-                this.webpackCompileCount += 1;
-                console.log(`Webpack compile ${this.webpackCompileCount}...`);
+                console.log(`Compiling...`);
             });
 
             this.watcher = compiler.watch({ignored: /node_modules/}, (error, stats) => {
@@ -86,11 +83,11 @@ export default function watchServer(options) {
 
             ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT', 'exit', 'uncaughtException'].forEach(event =>
                 process.on(event, (error) => {
+                    this.stopWebpack();
+                    this.stopServer();
                     if (error) {
                         console.error('ERROR', error);
                     }
-                    this.stopWebpack();
-                    this.stopServer();
                 }));
         },
     };
