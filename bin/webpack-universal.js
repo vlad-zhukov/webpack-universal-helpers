@@ -32,9 +32,15 @@ const {
 // eslint-disable-next-line import/no-dynamic-require
 const webpackConfig = require(path.resolve(config));
 
-watchServer({
-    webpackConfig,
-    bundlePath: bundle,
-    cwd,
-    hot,
-});
+try {
+    watchServer({
+        webpackConfig,
+        bundlePath: bundle,
+        cwd,
+        hot,
+    });
+}
+catch (error) {
+    console.error(error);
+    process.exitCode = 1;
+}
