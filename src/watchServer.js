@@ -75,11 +75,17 @@ export default function watchServer(options) {
         }
     }
 
-    startWebpack();
+    function stop() {
+        stopWebpack();
+        stopServer();
+    }
 
     ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT', 'exit', 'uncaughtException'].forEach(event =>
         process.on(event, () => {
-            stopWebpack();
-            stopServer();
+            stop();
         }));
+
+    startWebpack();
+
+    return {isDead, stop};
 }
