@@ -21,23 +21,23 @@
     "prepublishOnly": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "execa": "^0.10.0",
-    "yargs": "^11.0.0"
+    "execa": "^0.11.0",
+    "yargs": "^12.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.47",
-    "@babel/preset-env": "^7.0.0-beta.47",
+    "@babel/core": "7.0.0-rc.2",
+    "@babel/preset-env": "7.0.0-rc.2",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^8.2.3",
-    "babel-jest": "^22.4.3",
+    "babel-eslint": "^8.2.6",
+    "babel-jest": "^23.4.2",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.11.0",
-    "jest": "^22.4.3",
+    "eslint-plugin-import": "^2.14.0",
+    "jest": "^23.5.0",
     "prettier-eslint-cli": "^4.7.1",
     "rimraf": "^2.6.2",
-    "rollup": "^0.59.1",
-    "rollup-plugin-babel": "^4.0.0-beta.4",
+    "rollup": "^0.64.1",
+    "rollup-plugin-babel": "^4.0.0-beta.8",
     "webpack": "^3.12.0"
   },
   "peerDependencies": {
