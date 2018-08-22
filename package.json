@@ -1,6 +1,6 @@
 {
   "name": "webpack-universal-helpers",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Just a few helpers for building universal apps with webpack",
   "author": "Vlad Zhukov (http://github.com/Vlad-Zhukov)",
   "license": "MIT",
